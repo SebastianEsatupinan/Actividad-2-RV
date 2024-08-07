@@ -22,6 +22,11 @@ public class MovimientoJugador : MonoBehaviour
     public float frecuenciaMovimiento = 1.0f; // Frecuencia del movimiento de la cámara
     private float tiempoMovimiento;
 
+    // Variables para el sonido de caminar
+    public AudioSource audioSource; // Componente AudioSource
+    public AudioClip sonidoCaminar; // Clip de sonido para caminar
+    private bool caminando = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,5 +80,25 @@ public class MovimientoJugador : MonoBehaviour
         // Movimiento de la cámara
         tiempoMovimiento += Time.deltaTime * frecuenciaMovimiento;
         camaraTransform.localPosition = new Vector3(0f, Mathf.Sin(tiempoMovimiento) * amplitudMovimiento, 0f);
+
+        // Sonido de caminar
+        if (enSuelo && (movimientoHorizontal != 0 || movimientoVertical != 0))
+        {
+            if (!caminando)
+            {
+                audioSource.clip = sonidoCaminar;
+                audioSource.loop = true;
+                audioSource.Play();
+                caminando = true;
+            }
+        }
+        else
+        {
+            if (caminando)
+            {
+                audioSource.Stop();
+                caminando = false;
+            }
+        }
     }
 }
